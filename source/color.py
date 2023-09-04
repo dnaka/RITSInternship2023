@@ -15,7 +15,7 @@ COLOR_DICT = {
   "GRAY":6,
 }
 
-# pybricksのreferenceはここ: https://docs.pybricks.com/en/v2.0/ev3devices.html
+# pybricksのreferenceはここ: https://docs.pybricks.com/en/v3.2.0/index.html
 class RGBColor():
   """
   RGBカラーを取り扱うクラス。定数とメソッドのみで状態は持たない。
@@ -26,7 +26,7 @@ class RGBColor():
   # 各色の基準値。RGBの反射値がこれらの+-THRESHOLD以内なら、その色として扱う。単位は%
   BASE_RED = [57, 7, 7]
   BASE_BLUE = [7, 12, 32]
-  BASE_YELLOW = [50, 48, 5]
+  BASE_YELLOW = [63, 57, 8]
   BASE_BLACK = [1, 2, 0]
   BASE_GRAY = [29, 34, 43]
   BASE_GREEN = [10, 28, 6]
@@ -91,8 +91,11 @@ if __name__ == "__main__":
 
   while True:
     color = rgbColor.getColor()
+    (red, green, blue) = rgbColor.getRgb()
+    rgbStr = "R:" + str(red) + ", G:" + str(green) + ", B:" + str(blue)
 
     ev3.screen.clear()
+    ev3.screen.draw_text(0, 20, rgbStr)
     if color is COLOR_DICT["UNKNOWN"]:
       ev3.screen.draw_text(0, 0, "UNKNOWN")
     elif color is COLOR_DICT["RED"]:

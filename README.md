@@ -128,7 +128,7 @@ KPT は Keep, Problem, Try の頭文字で、今回のスプリントで行っ�
 ## 資料
 
 - pybrics の API Reference
-  - https://docs.pybricks.com/en/stable/index.html
+  - https://docs.pybricks.com/en/v3.2.0/index.html
 - python チュートリアル
   - https://docs.python.org/ja/3/tutorial/index.html
 - pyhton 標準ライブラリ

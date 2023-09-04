@@ -2,7 +2,7 @@
 import sys
 sys.path.append("./")
 
-# pybricksのreferenceはここ: https://docs.pybricks.com/en/v2.0/ev3devices.html
+# pybricksのreferenceはここ: https://docs.pybricks.com/en/v3.2.0/index.html
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor
 from pybricks.parameters import Port
@@ -14,7 +14,7 @@ class LineTraceCar():
   """
 
   # タイヤの速度。ターンする時は片方をLOW、もう片方をHIGHにすると曲がる。単位は角度/s (deg/s)
-  SPEED = [120, 50]
+  SPEED = [120, 30]
 
   def __init__(self):
     """
