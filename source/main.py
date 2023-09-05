@@ -8,6 +8,7 @@ from pybricks.ev3devices import Motor, TouchSensor, UltrasonicSensor
 from pybricks.parameters import Port
 from pybricks.tools import wait, StopWatch
 from pybricks import ev3brick as brick
+from pybricks.robotics import DriveBase
 from color import RGBColor, COLOR_DICT
 
 class LineTraceCar():
@@ -25,30 +26,39 @@ class LineTraceCar():
     # EV3の固有デバイス初期化
     self.leftMotor = Motor(Port.C)
     self.rightMotor = Motor(Port.B)
+    self.robot = DriveBase(self.leftMotor, self.rightMotor, 56, 104)
+    
   
   def parking(self):
-    self.__run(self.SPEED[0], self.SPEED[0])
-    wait(2500)
-    self.__run(-self.SPEED[0], self.SPEED[0])
-    wait(1700)
-    self.__run(-self.SPEED[0], -self.SPEED[0])
-    wait(4000)
-    self.idle()
-    self.__run(self.SPEED[0], self.SPEED[0])
-    wait(4000)
-    self.__run(self.SPEED[0], -self.SPEED[0])
-    wait(1700)
+    """
+    車庫入れと元の道への復帰をする
+    """
+    self.robot.drive_time(self.SPEED[0], 0, 180000/self.SPEED[0])
+    self.robot.drive_time(0, -45, 2500)
+    self.robot.drive_time(-self.SPEED[0], 0, 270000/self.SPEED[0])
 
-"""
-  def goal(self):
-    self.__run(self.SPEED[0], self.SPEED[0])
-    wait(4000)
-    self.__run(-self.SPEED[0], self.SPEED[0])
-    wait(1650)
+    # 待機状態にする
     self.idle()
-"""
+
+    self.robot.drive_time(self.SPEED[0], 0, 270000/self.SPEED[0])
+    self.robot.drive_time(0, 45, 2500)
+
+
+  def goal(self):
+    """
+    厨房に戻る
+    """
+    self.robot.drive_time(self.SPEED[0], 0, 300000/self.SPEED[0])
+    self.robot.drive_time(0, -45, 2500)
+
+    # 待機状態にする
+    self.idle()
+
 
   def idle(self):
+    """
+    タッチセンサーが押されるまで待機状態になる
+    """
     self.__run(0,0)
     while True:
       if touch_sensor.pressed():
@@ -60,58 +70,70 @@ class LineTraceCar():
     """
     # RGBColorクラスの初期化
     rgbColor = RGBColor()
-    
+
     self.__initMotor()
-    flag = 0
+    isDelivery = True
 
     # ラインをトレースして走る
     while True:
 
       # 色の取得と判定
       gotColor = rgbColor.getColor()
+      # 画面を初期化
       brick.display.clear()
+
       if gotColor is COLOR_DICT["BLACK"]:
+        # 色名を画面に表示
+        brick.display.text("BLACK",(60,50))
         # 右旋回
         self.__run(self.SPEED[1], self.SPEED[0])
-        brick.display.text("BLACK",(60,50))
 
       elif gotColor is COLOR_DICT["YELLOW"]:
+        # 色名を画面に表示
         brick.display.text("YELLOW",(60,50))
-        if color == "YELLOW" and flag == 0:
-          flag = 1
+        if color == "YELLOW" and isDelivery:
+          isDelivery = False
+          # 車庫入れ
           self.parking()
         else:
           # 右旋回
           self.__run(self.SPEED[1], self.SPEED[0])
       
       elif gotColor is COLOR_DICT["RED"]:
+        # 色名を画面に表示
         brick.display.text("RED",(60,50))
-        if color == "RED" and flag == 0:
-          flag = 1
+        if color == "RED" and isDelivery:
+          isDelivery = False
+          # 車庫入れ
           self.parking()
         else:
           # 右旋回
           self.__run(self.SPEED[1], self.SPEED[0])
 
       elif gotColor is COLOR_DICT["BLUE"]:
+        # 色名を画面に表示
         brick.display.text("BLUE",(60,50))
-        if color == "BLUE" and flag == 0:
-          flag = 1
+        if color == "BLUE" and isDelivery:
+          isDelivery = False
+          # 車庫入れ
           self.parking()
         else:
           # 右旋回
           self.__run(self.SPEED[1], self.SPEED[0])
 
       elif gotColor is COLOR_DICT["GRAY"]:
+        # 色名を画面に表示
         brick.display.text("GRAY",(60,50))
-        if flag == 1:
-          flag = 0
-          self.goal()
-        else:
+        if isDelivery:
           # 右旋回
           self.__run(self.SPEED[1], self.SPEED[0])
+        else:
+          isDelivery = True
+          # 厨房に戻る
+          self.goal()
 
       elif gotColor is COLOR_DICT["WHITE"]:
+        # 色名を画面に表示
         brick.display.text("WHITE",(60,50))
         # 左回転
         self.__run(self.SPEED[0], self.SPEED[1])
@@ -180,4 +202,4 @@ if __name__ == "__main__":
   touch_sensor = TouchSensor(Port.S2)
   
   # ライントレース開始
-  car.TraceColorLine("YELLOW")
+  car.TraceColorLine("RED")
