@@ -6,6 +6,8 @@ sys.path.append("./")
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor
 from pybricks.parameters import Port
+from pybricks.ev3devices import UltrasonicSensor
+from pybricks import ev3brick as brick
 from color import RGBColor, COLOR_DICT
 
 class LineTraceCar():
@@ -24,7 +26,18 @@ class LineTraceCar():
     self.leftMotor = Motor(Port.C)
     self.rightMotor = Motor(Port.B)
     
+    self.ultrasonicsensor = UltrasonicSensor(Port.S4)
+
+  def GetDistance(self):
+    brick.display.clear()
+    distance = 100
+    distance = self.ultrasonicsensor.distance()
+    brick.display.text(distance,(60,50))
+    return distance
+    
   def TraceColorLine(self):
+
+
     """
     色の線をトレースする
     """
@@ -35,6 +48,9 @@ class LineTraceCar():
 
     # ラインをトレースして走る
     while True:
+      if self.GetDistance() <= 50:
+        self.__run(0, 0)
+        continue
 
       # 色の取得と判定
       gotColor = rgbColor.getColor()
@@ -61,7 +77,7 @@ class LineTraceCar():
 
       else:
         # 白以外のその他の色も左回転
-        self.__run(self.SPEED[0], self.SPEED[1])
+        self.__run(self.SPEED[1], self.SPEED[0])
     # end of while
 
     # モーターを停止
