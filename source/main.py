@@ -77,7 +77,7 @@ class LineTraceCar():
 
       else:
         # 白以外のその他の色も左回転
-        self.__run(self.SPEED[1], self.SPEED[0])
+        self.__run(self.SPEED[0], self.SPEED[1])
     # end of while
 
     # モーターを停止
