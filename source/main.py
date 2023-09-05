@@ -25,14 +25,16 @@ class LineTraceCar():
     # EV3の固有デバイス初期化
     self.leftMotor = Motor(Port.C)
     self.rightMotor = Motor(Port.B)
-    
     self.ultrasonicsensor = UltrasonicSensor(Port.S4)
 
   def GetDistance(self):
+    # 前方障害物との距離を測定
     brick.display.clear()
+    # 距離の初期値は100mm
     distance = 100
     distance = self.ultrasonicsensor.distance()
     brick.display.text(distance,(60,50))
+    # 距離を返す
     return distance
     
   def TraceColorLine(self):
@@ -48,7 +50,10 @@ class LineTraceCar():
 
     # ラインをトレースして走る
     while True:
+      
+      #  障害物との距離が5cm以下の場合
       if self.GetDistance() <= 50:
+        # 停止し、この周の処理を終了
         self.__run(0, 0)
         continue
 
