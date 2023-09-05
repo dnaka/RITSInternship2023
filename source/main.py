@@ -197,9 +197,55 @@ class LineTraceCar():
     # 走行距離yは y = 5.6(cm タイヤ直径) * 3.14 * deg / 360 で計算できるので、これを変形してdegを計算する
     return run_distance_cm * 20.47
 
+
+class initColor():
+    def __init__(self, ts_1, ts_2):
+      self.init_color = "RED"
+      self.ts_1 = ts_1
+      self.ts_2 = ts_2
+
+    def selectColor(self):
+      stop_color = ["BLUE", "RED", "YELLOW"]
+      color_index = 0
+
+      brick.display.clear()
+      brick.display.text("please select color",(20, 50))
+
+      wait(3000)
+
+      pre_ts_1, pre_ts_2 = False, False
+
+      brick.display.clear()
+      brick.display.text(stop_color[color_index],(60, 50))
+
+      while True:
+        # waitを入れることで、ボタンが確実に反応するようになる
+        wait(100)
+        if (not self.ts_1.pressed()) and pre_ts_1:
+          color_index = (color_index + 1) % 3
+          brick.display.clear()
+          brick.display.text(stop_color[color_index],(60, 50))
+
+        if (not self.ts_2.pressed()) and pre_ts_2:
+          brick.display.clear()
+          break
+
+        pre_ts_1 = ts_1.pressed()
+        pre_ts_2 = ts_2.pressed()
+
+      self.init_color = stop_color[color_index]
+
+      return self.init_color
+
+
 if __name__ == "__main__":
+  ts_1, ts_2 = TouchSensor(Port.S1), TouchSensor(Port.S2)
+
+  instanceInitColor = initColor(ts_1, ts_2)
+  init_color = instanceInitColor.selectColor()
+
+  print(init_color)
+
   car = LineTraceCar()
-  touch_sensor = TouchSensor(Port.S2)
-  
   # ライントレース開始
-  car.TraceColorLine("RED")
+  car.TraceColorLine(init_color)
