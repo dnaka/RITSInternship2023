@@ -4,8 +4,10 @@ sys.path.append("./")
 
 # pybricksのreferenceはここ: https://docs.pybricks.com/en/v3.2.0/index.html
 from pybricks.hubs import EV3Brick
-from pybricks.ev3devices import Motor
+from pybricks.ev3devices import Motor, TouchSensor, UltrasonicSensor
 from pybricks.parameters import Port
+from pybricks.tools import wait
+from pybricks import ev3brick as brick
 from color import RGBColor, COLOR_DICT
 
 class LineTraceCar():
@@ -23,8 +25,34 @@ class LineTraceCar():
     # EV3の固有デバイス初期化
     self.leftMotor = Motor(Port.C)
     self.rightMotor = Motor(Port.B)
-    
-  def TraceColorLine(self):
+  
+  def parking(self):
+    self.__run(self.SPEED[0], self.SPEED[0])
+    wait(2500)
+    self.__run(-self.SPEED[0], self.SPEED[0])
+    wait(1700)
+    self.__run(-self.SPEED[0], -self.SPEED[0])
+    wait(4000)
+    self.idle()
+    self.__run(self.SPEED[0], self.SPEED[0])
+    wait(4000)
+    self.__run(self.SPEED[0], -self.SPEED[0])
+    wait(1700)
+
+  def goal(self):
+    self.__run(self.SPEED[0], self.SPEED[0])
+    wait(4000)
+    self.__run(-self.SPEED[0], self.SPEED[0])
+    wait(1650)
+    self.idle()
+
+  def idle(self):
+    self.__run(0,0)
+    while True:
+      if touch_sensor.pressed():
+        break
+
+  def TraceColorLine(self, color):
     """
     色の線をトレースする
     """
@@ -32,30 +60,57 @@ class LineTraceCar():
     rgbColor = RGBColor()
     
     self.__initMotor()
+    flag = 0
 
     # ラインをトレースして走る
     while True:
 
       # 色の取得と判定
       gotColor = rgbColor.getColor()
-
+      brick.display.clear()
       if gotColor is COLOR_DICT["BLACK"]:
         # 右旋回
         self.__run(self.SPEED[1], self.SPEED[0])
+        brick.display.text("BLACK",(60,50))
 
       elif gotColor is COLOR_DICT["YELLOW"]:
-        # 右旋回
-        self.__run(self.SPEED[1], self.SPEED[0])
+        brick.display.text("YELLOW",(60,50))
+        if color == 2 and flag == 0:
+          flag = 1
+          self.parking()
+        else:
+          # 右旋回
+          self.__run(self.SPEED[1], self.SPEED[0])
       
       elif gotColor is COLOR_DICT["RED"]:
-        # 右旋回
-        self.__run(self.SPEED[1], self.SPEED[0])
+        brick.display.text("RED",(60,50))
+        if color == 1 and flag == 0:
+          flag = 1
+          self.parking()
+        else:
+          # 右旋回
+          self.__run(self.SPEED[1], self.SPEED[0])
 
       elif gotColor is COLOR_DICT["BLUE"]:
-        # 右旋回
-        self.__run(self.SPEED[1], self.SPEED[0])
+        brick.display.text("BLUE",(60,50))
+        if color == 0 and flag == 0:
+          flag = 1
+          self.parking()
+        else:
+          # 右旋回
+          self.__run(self.SPEED[1], self.SPEED[0])
+
+      elif gotColor is COLOR_DICT["GRAY"]:
+        brick.display.text("GRAY",(60,50))
+        if flag == 1:
+          flag = 0
+          self.goal()
+        else:
+          # 右旋回
+          self.__run(self.SPEED[1], self.SPEED[0])
 
       elif gotColor is COLOR_DICT["WHITE"]:
+        brick.display.text("WHITE",(60,50))
         # 左回転
         self.__run(self.SPEED[0], self.SPEED[1])
 
@@ -120,6 +175,7 @@ class LineTraceCar():
 
 if __name__ == "__main__":
   car = LineTraceCar()
+  touch_sensor = TouchSensor(Port.S1)
   
   # ライントレース開始
-  car.TraceColorLine()
+  car.TraceColorLine(1)

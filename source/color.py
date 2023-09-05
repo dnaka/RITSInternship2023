@@ -24,13 +24,13 @@ class RGBColor():
   THRESHOLD = 8
 
   # 各色の基準値。RGBの反射値がこれらの+-THRESHOLD以内なら、その色として扱う。単位は%
-  BASE_RED = [57, 7, 7]
-  BASE_BLUE = [7, 12, 32]
-  BASE_YELLOW = [63, 57, 8]
-  BASE_BLACK = [1, 2, 0]
-  BASE_GRAY = [29, 34, 43]
-  BASE_GREEN = [10, 28, 6]
-  BASE_WHITE = [57, 58, 75]
+  BASE_RED = [77, 13, 35]
+  BASE_BLUE = [9, 21, 100]
+  BASE_YELLOW = [76, 91, 31]
+  BASE_BLACK = [1, 3, 6]
+  BASE_GRAY = [42, 64, 95]
+  BASE_GREEN = [15, 53, 30]
+  BASE_WHITE = [91, 92, 92]
 
   def __init__(self):
     """Constructor"""
