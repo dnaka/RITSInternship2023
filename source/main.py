@@ -123,8 +123,10 @@ class LineTraceCar():
 
     
 class initColor():
-    def __init__(self):
+    def __init__(self, ts_1, ts_2):
       self.init_color = "RED"
+      self.ts_1 = ts_1
+      self.ts_2 = ts_2
 
     def selectColor(self):
       stop_color = ["BLUE", "RED", "YELLOW"]
@@ -143,12 +145,12 @@ class initColor():
       while True:
         # waitを入れることで、ボタンが確実に反応するようになる
         wait(100)
-        if (not ts_1.pressed()) and pre_ts_1:
+        if (not self.ts_1.pressed()) and pre_ts_1:
           color_index = (color_index + 1) % 3
           brick.display.clear()
           brick.display.text(stop_color[color_index],(60, 50))
 
-        if (not ts_2.pressed()) and pre_ts_2:
+        if (not self.ts_2.pressed()) and pre_ts_2:
           brick.display.clear()
           break
 
@@ -163,7 +165,7 @@ class initColor():
 if __name__ == "__main__":
   ts_1, ts_2 = TouchSensor(Port.S1), TouchSensor(Port.S2)
 
-  instanceInitColor = initColor()
+  instanceInitColor = initColor(ts_1, ts_2)
   init_color = instanceInitColor.selectColor()
 
   print(init_color)
