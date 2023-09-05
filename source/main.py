@@ -28,10 +28,8 @@ class LineTraceCar():
     self.ultrasonicsensor = UltrasonicSensor(Port.S4)
 
   def GetDistance(self):
-    # 前方障害物との距離を測定
-    distance = self.ultrasonicsensor.distance()
     # 距離を返す
-    return distance
+    return self.ultrasonicsensor.distance()
     
   def TraceColorLine(self):
 
