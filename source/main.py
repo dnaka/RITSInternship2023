@@ -120,17 +120,14 @@ class LineTraceCar():
     """
     # 走行距離yは y = 5.6(cm タイヤ直径) * 3.14 * deg / 360 で計算できるので、これを変形してdegを計算する
     return run_distance_cm * 20.47
-    
+
     
 class initColor():
     def __init__(self):
       self.init_color = "RED"
 
     def selectColor(self):
-      #インスタンスの生成
-      ts_1, ts_2 = TouchSensor(Port.S1), TouchSensor(Port.S2)
       stop_color = ["BLUE", "RED", "YELLOW"]
-
       color_index = 0
 
       brick.display.clear()
@@ -144,10 +141,11 @@ class initColor():
       brick.display.text(stop_color[color_index],(60, 50))
 
       while True:
+        # waitを入れることで、ボタンが確実に反応するようになる
+        wait(100)
         if (not ts_1.pressed()) and pre_ts_1:
           color_index = (color_index + 1) % 3
           brick.display.clear()
-          # Print ``Hello`` near the middle of the screen
           brick.display.text(stop_color[color_index],(60, 50))
 
         if (not ts_2.pressed()) and pre_ts_2:
@@ -163,6 +161,8 @@ class initColor():
 
 
 if __name__ == "__main__":
+  ts_1, ts_2 = TouchSensor(Port.S1), TouchSensor(Port.S2)
+
   instanceInitColor = initColor()
   init_color = instanceInitColor.selectColor()
 
