@@ -61,7 +61,7 @@ class LineTraceCar():
     """
     self.__run(0,0)
     while True:
-      if touch_sensor.pressed():
+      if ts_1.pressed() or ts_2.pressed():
         break
 
   def TraceColorLine(self, color):
