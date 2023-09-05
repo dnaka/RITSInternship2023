@@ -6,7 +6,7 @@ sys.path.append("./")
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor, TouchSensor, UltrasonicSensor
 from pybricks.parameters import Port
-from pybricks.tools import wait
+from pybricks.tools import wait, StopWatch
 from pybricks import ev3brick as brick
 from color import RGBColor, COLOR_DICT
 
@@ -39,12 +39,14 @@ class LineTraceCar():
     self.__run(self.SPEED[0], -self.SPEED[0])
     wait(1700)
 
+"""
   def goal(self):
     self.__run(self.SPEED[0], self.SPEED[0])
     wait(4000)
     self.__run(-self.SPEED[0], self.SPEED[0])
     wait(1650)
     self.idle()
+"""
 
   def idle(self):
     self.__run(0,0)
@@ -75,7 +77,7 @@ class LineTraceCar():
 
       elif gotColor is COLOR_DICT["YELLOW"]:
         brick.display.text("YELLOW",(60,50))
-        if color == 2 and flag == 0:
+        if color == "YELLOW" and flag == 0:
           flag = 1
           self.parking()
         else:
@@ -84,7 +86,7 @@ class LineTraceCar():
       
       elif gotColor is COLOR_DICT["RED"]:
         brick.display.text("RED",(60,50))
-        if color == 1 and flag == 0:
+        if color == "RED" and flag == 0:
           flag = 1
           self.parking()
         else:
@@ -93,7 +95,7 @@ class LineTraceCar():
 
       elif gotColor is COLOR_DICT["BLUE"]:
         brick.display.text("BLUE",(60,50))
-        if color == 0 and flag == 0:
+        if color == "BLUE" and flag == 0:
           flag = 1
           self.parking()
         else:
@@ -175,7 +177,7 @@ class LineTraceCar():
 
 if __name__ == "__main__":
   car = LineTraceCar()
-  touch_sensor = TouchSensor(Port.S1)
+  touch_sensor = TouchSensor(Port.S2)
   
   # ライントレース開始
-  car.TraceColorLine(1)
+  car.TraceColorLine("YELLOW")
