@@ -36,18 +36,18 @@ class RGBColor():
     """Constructor"""
     self.colorSensor = ColorSensor(Port.S3)
 
-  def __parse(self, base, red, green, blue):
+  def __parse(self, base, red, green, blue, THRESHOLD):
     """ baseがBASE_WHITE かつ (BASE_WHITE - THRESHOLD) 値より明るければ、白と見なす """
     if (base[0] == self.BASE_WHITE[0] and base[1] == self.BASE_WHITE[1] and base[2] == self.BASE_WHITE[2]) and \
-       ((base[0] - self.THRESHOLD) <= red) and \
-       ((base[1] - self.THRESHOLD) <= green ) and \
-       ((base[2] - self.THRESHOLD) <= blue):
+       ((base[0] - THRESHOLD) <= red) and \
+       ((base[1] - THRESHOLD) <= green ) and \
+       ((base[2] - THRESHOLD) <= blue):
       return True
 
     """ RGBの反射値lightValが、baseで指定された色かどうか調べる"""
-    if ((base[0] - self.THRESHOLD) <= red   and red   <= (base[0] + self.THRESHOLD)) and \
-       ((base[1] - self.THRESHOLD) <= green and green <= (base[1] + self.THRESHOLD)) and \
-       ((base[2] - self.THRESHOLD) <= blue  and blue  <= (base[2] + self.THRESHOLD)):
+    if ((base[0] - THRESHOLD) <= red   and red   <= (base[0] + THRESHOLD)) and \
+       ((base[1] - THRESHOLD) <= green and green <= (base[1] + THRESHOLD)) and \
+       ((base[2] - THRESHOLD) <= blue  and blue  <= (base[2] + THRESHOLD)):
       return True
 
     return False
@@ -57,17 +57,17 @@ class RGBColor():
     センサーの取得したRGB値を具体的な色に変換する
     """
     (red, green, blue) = self.colorSensor.rgb()
-    if self.__parse(self.BASE_BLACK, red, green, blue):
+    if self.__parse(self.BASE_BLACK, red, green, blue, 20):
       return COLOR_DICT["BLACK"]
-    elif self.__parse(self.BASE_RED, red, green, blue):
+    elif self.__parse(self.BASE_RED, red, green, blue, 8):
       return COLOR_DICT["RED"]
-    elif self.__parse(self.BASE_YELLOW, red, green, blue):
+    elif self.__parse(self.BASE_YELLOW, red, green, blue, 8):
       return COLOR_DICT["YELLOW"]
-    elif self.__parse(self.BASE_BLUE, red, green, blue):
+    elif self.__parse(self.BASE_BLUE, red, green, blue, 6):
       return COLOR_DICT["BLUE"]
-    elif self.__parse(self.BASE_GRAY, red, green, blue):
+    elif self.__parse(self.BASE_GRAY, red, green, blue, 4):
       return COLOR_DICT["GRAY"]
-    elif self.__parse(self.BASE_WHITE, red, green, blue):
+    elif self.__parse(self.BASE_WHITE, red, green, blue, 10):
       return COLOR_DICT["WHITE"]
     else:
       return COLOR_DICT["UNKNOWN"]

@@ -20,7 +20,7 @@ class LineTraceCar():
   """
 
   # タイヤの速度。ターンする時は片方をLOW、もう片方をHIGHにすると曲がる。単位は角度/s (deg/s)
-  SPEED = [120, 30]
+  SPEED = [220, 60]
 
   def __init__(self):
     """
@@ -38,22 +38,22 @@ class LineTraceCar():
     車庫入れと元の道への復帰をする
     """
     self.robot.drive_time(self.SPEED[0], 0, 180000/self.SPEED[0])
-    self.robot.drive_time(0, -45, 2000)
-    self.robot.drive_time(-self.SPEED[0], 0, 270000/self.SPEED[0])
+    self.robot.drive_time(0, -45, 2200)
+    self.robot.drive_time(-self.SPEED[0], 0, 250000/self.SPEED[0])
 
     # 待機状態にする
     self.idle()
 
     self.robot.drive_time(self.SPEED[0], 0, 270000/self.SPEED[0])
-    self.robot.drive_time(0, 45, 2000)
-
+    self.robot.drive_time(0, 45, 2200)
+    self.robot.drive_time(self.SPEED[0], 0, 100000/self.SPEED[0])
 
   def goal(self):
     """
     厨房に戻る
     """
-    self.robot.drive_time(self.SPEED[0], 0, 300000/self.SPEED[0])
-    self.robot.drive_time(0, -45, 2000)
+    self.robot.drive_time(self.SPEED[0], 0, 310000/self.SPEED[0])
+    self.robot.drive_time(0, -45, 2200)
 
     # 待機状態にする
     self.idle()
@@ -85,11 +85,11 @@ class LineTraceCar():
     # ラインをトレースして走る
     while True:
 
-      #  障害物との距離が5cm以下の場合
-      if self.GetDistance() <= 50:
-        # 停止し、この周の処理を終了
-        self.__run(0, 0)
-        continue
+      # #  障害物との距離が5cm以下の場合
+      # if self.GetDistance() <= 50:
+      #   # 停止し、この周の処理を終了
+      #   self.__run(0, 0)
+      #   continue
 
       # 色の取得と判定
       gotColor = rgbColor.getColor()
