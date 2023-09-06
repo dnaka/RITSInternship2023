@@ -4,10 +4,11 @@ sys.path.append("./")
 
 # pybricksのreferenceはここ: https://docs.pybricks.com/en/v3.2.0/index.html
 from pybricks.hubs import EV3Brick
-from pybricks.ev3devices import Motor, TouchSensor
+from pybricks.ev3devices import Motor, TouchSensor, UltrasonicSensor
 from pybricks.parameters import Port
-from pybricks.ev3devices import UltrasonicSensor
+from pybricks.tools import wait, StopWatch
 from pybricks import ev3brick as brick
+from pybricks.robotics import DriveBase
 from color import RGBColor, COLOR_DICT
 
 from pybricks.tools import wait, StopWatch
@@ -29,21 +30,57 @@ class LineTraceCar():
     self.leftMotor = Motor(Port.C)
     self.rightMotor = Motor(Port.B)
     self.ultrasonicsensor = UltrasonicSensor(Port.S4)
+    self.robot = DriveBase(self.leftMotor, self.rightMotor, 56, 104)
+    
+  
+  def parking(self):
+    """
+    車庫入れと元の道への復帰をする
+    """
+    self.robot.drive_time(self.SPEED[0], 0, 180000/self.SPEED[0])
+    self.robot.drive_time(0, -45, 2000)
+    self.robot.drive_time(-self.SPEED[0], 0, 270000/self.SPEED[0])
+
+    # 待機状態にする
+    self.idle()
+
+    self.robot.drive_time(self.SPEED[0], 0, 270000/self.SPEED[0])
+    self.robot.drive_time(0, 45, 2000)
+
+
+  def goal(self):
+    """
+    厨房に戻る
+    """
+    self.robot.drive_time(self.SPEED[0], 0, 300000/self.SPEED[0])
+    self.robot.drive_time(0, -45, 2000)
+
+    # 待機状態にする
+    self.idle()
+
+
+  def idle(self):
+    """
+    タッチセンサーが押されるまで待機状態になる
+    """
+    self.__run(0,0)
+    while True:
+      if ts_1.pressed() or ts_2.pressed():
+        break
 
   def GetDistance(self):
     # 距離を返す
     return self.ultrasonicsensor.distance()
     
-  def TraceColorLine(self):
-
-
+  def TraceColorLine(self, color):
     """
     色の線をトレースする
     """
     # RGBColorクラスの初期化
     rgbColor = RGBColor()
-    
+
     self.__initMotor()
+    isDelivery = True
 
     # ラインをトレースして走る
     while True:
@@ -56,24 +93,62 @@ class LineTraceCar():
 
       # 色の取得と判定
       gotColor = rgbColor.getColor()
+      # 画面を初期化
+      brick.display.clear()
 
       if gotColor is COLOR_DICT["BLACK"]:
+        # 色名を画面に表示
+        brick.display.text("BLACK",(60,50))
         # 右旋回
         self.__run(self.SPEED[1], self.SPEED[0])
 
       elif gotColor is COLOR_DICT["YELLOW"]:
-        # 右旋回
-        self.__run(self.SPEED[1], self.SPEED[0])
+        # 色名を画面に表示
+        brick.display.text("YELLOW",(60,50))
+        if color == "YELLOW" and isDelivery:
+          isDelivery = False
+          # 車庫入れ
+          self.parking()
+        else:
+          # 右旋回
+          self.__run(self.SPEED[1], self.SPEED[0])
       
       elif gotColor is COLOR_DICT["RED"]:
-        # 右旋回
-        self.__run(self.SPEED[1], self.SPEED[0])
+        # 色名を画面に表示
+        brick.display.text("RED",(60,50))
+        if color == "RED" and isDelivery:
+          isDelivery = False
+          # 車庫入れ
+          self.parking()
+        else:
+          # 右旋回
+          self.__run(self.SPEED[1], self.SPEED[0])
 
       elif gotColor is COLOR_DICT["BLUE"]:
-        # 右旋回
-        self.__run(self.SPEED[1], self.SPEED[0])
+        # 色名を画面に表示
+        brick.display.text("BLUE",(60,50))
+        if color == "BLUE" and isDelivery:
+          isDelivery = False
+          # 車庫入れ
+          self.parking()
+        else:
+          # 右旋回
+          self.__run(self.SPEED[1], self.SPEED[0])
+
+      elif gotColor is COLOR_DICT["GRAY"]:
+        # 色名を画面に表示
+        brick.display.text("GRAY",(60,50))
+        if isDelivery:
+          # 右旋回
+          self.__run(self.SPEED[1], self.SPEED[0])
+        else:
+          isDelivery = True
+          # 厨房に戻る
+          self.goal()
 
       elif gotColor is COLOR_DICT["WHITE"]:
+        # 色名を画面に表示
+        brick.display.text("WHITE",(60,50))
         # 左回転
         self.__run(self.SPEED[0], self.SPEED[1])
 
@@ -136,7 +211,6 @@ class LineTraceCar():
     # 走行距離yは y = 5.6(cm タイヤ直径) * 3.14 * deg / 360 で計算できるので、これを変形してdegを計算する
     return run_distance_cm * 20.47
 
-    
 class initColor():
     def __init__(self, ts_1, ts_2):
       self.init_color = "RED"
@@ -187,4 +261,5 @@ if __name__ == "__main__":
 
   car = LineTraceCar()
   # ライントレース開始
-  car.TraceColorLine()
+
+  car.TraceColorLine(init_color)
