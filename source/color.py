@@ -21,16 +21,16 @@ class RGBColor():
   RGBカラーを取り扱うクラス。定数とメソッドのみで状態は持たない。
   Colorクラスだとpybricksのクラス名とかぶるのでRGBColorにしている。
   """
-  THRESHOLD = 10
+  THRESHOLD = 8
 
   # 各色の基準値。RGBの反射値がこれらの+-THRESHOLD以内なら、その色として扱う。単位は%
   BASE_RED = [88, 18, 42]
   BASE_BLUE = [13, 27, 100]
   BASE_YELLOW = [88, 100, 39]
-  BASE_BLACK = [6, 7, 13]
+  BASE_BLACK = [5, 5, 10]
   BASE_GRAY = [52, 80, 100]
-  BASE_GREEN = [15, 53, 30]
-  BASE_WHITE = [98, 100, 100]
+  BASE_GREEN = [20, 53, 38]
+  BASE_WHITE = [57, 58, 75]
 
   def __init__(self):
     """Constructor"""
@@ -63,10 +63,10 @@ class RGBColor():
       return COLOR_DICT["RED"]
     elif self.__parse(self.BASE_YELLOW, red, green, blue):
       return COLOR_DICT["YELLOW"]
-    elif self.__parse(self.BASE_GRAY, red, green, blue):
-      return COLOR_DICT["GRAY"]
     elif self.__parse(self.BASE_BLUE, red, green, blue):
       return COLOR_DICT["BLUE"]
+    elif self.__parse(self.BASE_GRAY, red, green, blue):
+      return COLOR_DICT["GRAY"]
     elif self.__parse(self.BASE_WHITE, red, green, blue):
       return COLOR_DICT["WHITE"]
     else:

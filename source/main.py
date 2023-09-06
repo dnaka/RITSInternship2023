@@ -38,14 +38,14 @@ class LineTraceCar():
     車庫入れと元の道への復帰をする
     """
     self.robot.drive_time(self.SPEED[0], 0, 180000/self.SPEED[0])
-    self.robot.drive_time(0, -45, 2500)
+    self.robot.drive_time(0, -45, 2000)
     self.robot.drive_time(-self.SPEED[0], 0, 270000/self.SPEED[0])
 
     # 待機状態にする
     self.idle()
 
     self.robot.drive_time(self.SPEED[0], 0, 270000/self.SPEED[0])
-    self.robot.drive_time(0, 45, 2500)
+    self.robot.drive_time(0, 45, 2000)
 
 
   def goal(self):
@@ -53,7 +53,7 @@ class LineTraceCar():
     厨房に戻る
     """
     self.robot.drive_time(self.SPEED[0], 0, 300000/self.SPEED[0])
-    self.robot.drive_time(0, -45, 2500)
+    self.robot.drive_time(0, -45, 2000)
 
     # 待機状態にする
     self.idle()
