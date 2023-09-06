@@ -11,6 +11,9 @@ from pybricks import ev3brick as brick
 from pybricks.robotics import DriveBase
 from color import RGBColor, COLOR_DICT
 
+from pybricks.tools import wait, StopWatch
+from pybricks import ev3brick as brick
+
 class LineTraceCar():
   """
   ライントレースを行うクラス
@@ -26,6 +29,7 @@ class LineTraceCar():
     # EV3の固有デバイス初期化
     self.leftMotor = Motor(Port.C)
     self.rightMotor = Motor(Port.B)
+    self.ultrasonicsensor = UltrasonicSensor(Port.S4)
     self.robot = DriveBase(self.leftMotor, self.rightMotor, 56, 104)
     
   
@@ -64,6 +68,10 @@ class LineTraceCar():
       if ts_1.pressed() or ts_2.pressed():
         break
 
+  def GetDistance(self):
+    # 距離を返す
+    return self.ultrasonicsensor.distance()
+    
   def TraceColorLine(self, color):
     """
     色の線をトレースする
@@ -76,6 +84,12 @@ class LineTraceCar():
 
     # ラインをトレースして走る
     while True:
+
+      #  障害物との距離が5cm以下の場合
+      if self.GetDistance() <= 50:
+        # 停止し、この周の処理を終了
+        self.__run(0, 0)
+        continue
 
       # 色の取得と判定
       gotColor = rgbColor.getColor()
@@ -197,7 +211,6 @@ class LineTraceCar():
     # 走行距離yは y = 5.6(cm タイヤ直径) * 3.14 * deg / 360 で計算できるので、これを変形してdegを計算する
     return run_distance_cm * 20.47
 
-
 class initColor():
     def __init__(self, ts_1, ts_2):
       self.init_color = "RED"
@@ -248,4 +261,5 @@ if __name__ == "__main__":
 
   car = LineTraceCar()
   # ライントレース開始
+
   car.TraceColorLine(init_color)
