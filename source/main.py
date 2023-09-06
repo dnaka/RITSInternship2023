@@ -37,14 +37,22 @@ class LineTraceCar():
     """
     車庫入れと元の道への復帰をする
     """
+
+    # 車庫入れ
+    # 直進
     self.robot.drive_time(self.SPEED[0], 0, 180000/self.SPEED[0])
+    # 反時計回りに角速度(45deg/s)で転回
     self.robot.drive_time(0, -45, 2000)
-    self.robot.drive_time(-self.SPEED[0], 0, 270000/self.SPEED[0])
+    # 後退
+    self.robot.drive_time(-self.SPEED[0], 0, 250000/self.SPEED[0])
 
     # 待機状態にする
     self.idle()
 
+    # 元の道への復帰
+    # 直進
     self.robot.drive_time(self.SPEED[0], 0, 270000/self.SPEED[0])
+    # 時計回りに角速度(45deg/s)で転回
     self.robot.drive_time(0, 45, 2000)
 
 
@@ -52,7 +60,9 @@ class LineTraceCar():
     """
     厨房に戻る
     """
+    # 直進
     self.robot.drive_time(self.SPEED[0], 0, 300000/self.SPEED[0])
+    # 反時計回りに角速度(45deg/s)で転回
     self.robot.drive_time(0, -45, 2000)
 
     # 待機状態にする
@@ -63,10 +73,15 @@ class LineTraceCar():
     """
     タッチセンサーが押されるまで待機状態になる
     """
+    # 停止する
     self.__run(0,0)
+
+    # 待機状態になる
     while True:
+      # タッチセンサーが押されたら処理を終了
       if ts_1.pressed() or ts_2.pressed():
         break
+    # end of while
 
   def GetDistance(self):
     # 距離を返す
