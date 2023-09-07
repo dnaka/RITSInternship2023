@@ -7,7 +7,6 @@ from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor, TouchSensor, UltrasonicSensor
 from pybricks.parameters import Port
 from pybricks.tools import wait, StopWatch
-from pybricks import ev3brick as brick
 from pybricks.robotics import DriveBase
 from color import RGBColor, COLOR_DICT
 from time import time
@@ -27,10 +26,11 @@ class LineTraceCar():
     # EV3の固有デバイス初期化
     self.leftMotor = Motor(Port.C)
     self.rightMotor = Motor(Port.B)
-    self.ultrasonicsensor = UltrasonicSensor(Port.S4)
     self.robot = DriveBase(self.leftMotor, self.rightMotor, 56, 104)
+    self.ultrasonicsensor = UltrasonicSensor(Port.S4)
     self.ts_1 = TouchSensor(Port.S1)
     self.ts_2 = TouchSensor(Port.S2)
+    self.ev3 = EV3Brick()
 
   def parking(self):
     """
@@ -72,11 +72,16 @@ class LineTraceCar():
     """
     # 停止する
     self.__run(0,0)
-
+    # テキストの表示
+    self.ev3.screen.clear()
+    self.ev3.screen.draw_text(0, 20, "Please take a dish")
+    self.ev3.screen.draw_text(5, 60, "and press button")
     # 待機状態になる
     while True:
       # タッチセンサーが押されたら処理を終了
       if self.ts_1.pressed() or self.ts_2.pressed():
+        # 画面をクリア
+        self.ev3.screen.clear()
         break
     # end of while
 
@@ -258,15 +263,12 @@ class LineTraceCar():
     # 現在選んでいる色のリスト番号
     color_index = 0
 
-    brick.display.clear()
-    brick.display.text("please select color",(20, 50))
-
-    wait(3000)
-
     pre_ts_1, pre_ts_2 = False, False
 
-    brick.display.clear()
-    brick.display.text(color_list[color_index],(60, 50))
+    # テキストの表示
+    self.ev3.screen.clear()
+    self.ev3.screen.draw_text(0, 20, "Please select color")
+    self.ev3.screen.draw_text(0, 60, color_list[color_index])
 
     # 色の選択
     while True:
@@ -276,12 +278,15 @@ class LineTraceCar():
       # ts_1を押すと色を変更
       if (not self.ts_1.pressed()) and pre_ts_1:
         color_index = (color_index + 1) % 3
-        brick.display.clear()
-        brick.display.text(color_list[color_index],(60, 50))
+        # テキストの変更
+        self.ev3.screen.clear()
+        self.ev3.screen.draw_text(0, 20, "Please select color")
+        self.ev3.screen.draw_text(0, 60, color_list[color_index])
 
       # ts_2を押すとループを終了
       if (not self.ts_2.pressed()) and pre_ts_2:
-        brick.display.clear()
+        # 画面をクリア
+        self.ev3.screen.clear()
         break
 
       # 100ミリ秒前にボタンが押されたか
