@@ -10,7 +10,7 @@ from pybricks.tools import wait, StopWatch
 from pybricks import ev3brick as brick
 from pybricks.robotics import DriveBase
 from color import RGBColor, COLOR_DICT
-
+from time import time
 from pybricks.tools import wait, StopWatch
 from pybricks import ev3brick as brick
 
@@ -81,30 +81,33 @@ class LineTraceCar():
 
     self.__initMotor()
     isDelivery = True
-
+    count = 0
     # ラインをトレースして走る
     while True:
 
-      # #  障害物との距離が5cm以下の場合
-      # if self.GetDistance() <= 50:
-      #   # 停止し、この周の処理を終了
-      #   self.__run(0, 0)
-      #   continue
+      #  障害物との距離が5cm以下の場合
+      if self.GetDistance() <= 50:
+        # 停止し、この周の処理を終了
+        self.__run(0, 0)
+        continue
+
+      if not isDelivery:
+        count += 1
 
       # 色の取得と判定
       gotColor = rgbColor.getColor()
       # 画面を初期化
       brick.display.clear()
 
+      brick.display.text(count,(60,50))
+
       if gotColor is COLOR_DICT["BLACK"]:
-        # 色名を画面に表示
-        brick.display.text("BLACK",(60,50))
+
         # 右旋回
         self.__run(self.SPEED[1], self.SPEED[0])
 
       elif gotColor is COLOR_DICT["YELLOW"]:
-        # 色名を画面に表示
-        brick.display.text("YELLOW",(60,50))
+
         if color == "YELLOW" and isDelivery:
           isDelivery = False
           # 車庫入れ
@@ -114,8 +117,7 @@ class LineTraceCar():
           self.__run(self.SPEED[1], self.SPEED[0])
       
       elif gotColor is COLOR_DICT["RED"]:
-        # 色名を画面に表示
-        brick.display.text("RED",(60,50))
+
         if color == "RED" and isDelivery:
           isDelivery = False
           # 車庫入れ
@@ -125,8 +127,7 @@ class LineTraceCar():
           self.__run(self.SPEED[1], self.SPEED[0])
 
       elif gotColor is COLOR_DICT["BLUE"]:
-        # 色名を画面に表示
-        brick.display.text("BLUE",(60,50))
+
         if color == "BLUE" and isDelivery:
           isDelivery = False
           # 車庫入れ
@@ -136,25 +137,23 @@ class LineTraceCar():
           self.__run(self.SPEED[1], self.SPEED[0])
 
       elif gotColor is COLOR_DICT["GRAY"]:
-        # 色名を画面に表示
-        brick.display.text("GRAY",(60,50))
+
         if isDelivery:
           # 右旋回
           self.__run(self.SPEED[1], self.SPEED[0])
         else:
-          isDelivery = True
-          # 厨房に戻る
-          self.goal()
+          if count >= 550:
+            isDelivery = True
+            # 厨房に戻る
+            self.goal()
 
       elif gotColor is COLOR_DICT["WHITE"]:
-        # 色名を画面に表示
-        brick.display.text("WHITE",(60,50))
         # 左回転
         self.__run(self.SPEED[0], self.SPEED[1])
 
       else:
-        # 白以外のその他の色も左回転
-        self.__run(self.SPEED[0], self.SPEED[1])
+        # その他の色は右回転
+        self.__run(self.SPEED[1], self.SPEED[0])
     # end of while
 
     # モーターを停止
@@ -249,6 +248,27 @@ class initColor():
       self.init_color = stop_color[color_index]
 
       return self.init_color
+"""
+class Time():
+  def __init__(self):
+    self.time_list = []
+  def StopWatch(self):
+    self.time = time()
+    self.time_list.append(self.time)
+  def GetTime():
+    if len(time_list) % 2 == 1:
+      time_list.append(time())
+      for i in
+
+    
+    else:
+      return 0
+
+ """ 
+  
+
+
+
 
 
 if __name__ == "__main__":

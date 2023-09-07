@@ -24,13 +24,13 @@ class RGBColor():
   THRESHOLD = 8
 
   # 各色の基準値。RGBの反射値がこれらの+-THRESHOLD以内なら、その色として扱う。単位は%
-  BASE_RED = [88, 18, 42]
-  BASE_BLUE = [13, 27, 100]
-  BASE_YELLOW = [88, 100, 39]
-  BASE_BLACK = [5, 5, 10]
-  BASE_GRAY = [52, 80, 100]
+  BASE_RED = [90, 18, 42]
+  BASE_BLUE = [14, 27, 100]
+  BASE_YELLOW = [93, 100, 43]
+  BASE_BLACK = [5, 6, 11]
+  BASE_GRAY = [54, 80, 100]
   BASE_GREEN = [20, 53, 38]
-  BASE_WHITE = [57, 58, 75]
+  BASE_WHITE = [80, 80, 80]
 
   def __init__(self):
     """Constructor"""
@@ -57,15 +57,15 @@ class RGBColor():
     センサーの取得したRGB値を具体的な色に変換する
     """
     (red, green, blue) = self.colorSensor.rgb()
-    if self.__parse(self.BASE_BLACK, red, green, blue, 20):
+    if self.__parse(self.BASE_BLACK, red, green, blue, 15):
       return COLOR_DICT["BLACK"]
-    elif self.__parse(self.BASE_RED, red, green, blue, 8):
+    elif self.__parse(self.BASE_RED, red, green, blue, 10):
       return COLOR_DICT["RED"]
-    elif self.__parse(self.BASE_YELLOW, red, green, blue, 8):
+    elif self.__parse(self.BASE_YELLOW, red, green, blue, 10):
       return COLOR_DICT["YELLOW"]
-    elif self.__parse(self.BASE_BLUE, red, green, blue, 6):
+    elif self.__parse(self.BASE_BLUE, red, green, blue, 10):
       return COLOR_DICT["BLUE"]
-    elif self.__parse(self.BASE_GRAY, red, green, blue, 4):
+    elif self.__parse(self.BASE_GRAY, red, green, blue, 5):
       return COLOR_DICT["GRAY"]
     elif self.__parse(self.BASE_WHITE, red, green, blue, 10):
       return COLOR_DICT["WHITE"]
