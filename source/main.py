@@ -10,6 +10,7 @@ from pybricks.tools import wait, StopWatch
 from pybricks import ev3brick as brick
 from pybricks.robotics import DriveBase
 from color import RGBColor, COLOR_DICT
+from time import time
 
 class LineTraceCar():
   """
@@ -82,7 +83,18 @@ class LineTraceCar():
   def GetDistance(self):
     # 距離を返す
     return self.ultrasonicsensor.distance()
-    
+
+  def Alert(self) :
+    """
+    アラートを鳴らす
+    """
+    while True:
+      if self.GetDistance() > 100:
+        break
+      else:
+        brick.sound.beep(300, 500, 5)
+        wait(500)
+
   def TraceColorLine(self):
     """
     色の線をトレースする
@@ -93,18 +105,26 @@ class LineTraceCar():
     self.__initMotor()
 
     isDelivery = True
+    count = 0
 
     selected_color = self.selectColor()
 
     # ラインをトレースして走る
     while True:
 
-      #  障害物との距離が5cm以下の場合
-      if self.GetDistance() <= 50:
-        # 停止し、この周の処理を終了
+      #  障害物との距離が10cm以下の場合
+      if self.GetDistance() <= 100:
+        # 停止し、停止時間の管理のためのcountを１増加させる
+        #この周の処理を終了
         self.__run(0, 0)
-        continue
-
+        count += 1
+        #約5秒間、ロボの前に障害物があった場合アラートを鳴らす。
+        if count >= 50:
+          self.Alert()
+        wait(100)
+        continue   
+      count = 0
+      
       # 色の取得と判定
       gotColor = rgbColor.getColor()
 
@@ -279,3 +299,4 @@ if __name__ == "__main__":
 
   # ライントレース開始
   car.TraceColorLine()
+

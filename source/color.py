@@ -59,11 +59,11 @@ class RGBColor():
     (red, green, blue) = self.colorSensor.rgb()
     if self.__parse(self.BASE_BLACK, red, green, blue, 30):
       return COLOR_DICT["BLACK"]
-    elif self.__parse(self.BASE_RED, red, green, blue, 8):
+    elif self.__parse(self.BASE_RED, red, green, blue, 10):
       return COLOR_DICT["RED"]
-    elif self.__parse(self.BASE_YELLOW, red, green, blue, 8):
+    elif self.__parse(self.BASE_YELLOW, red, green, blue, 10):
       return COLOR_DICT["YELLOW"]
-    elif self.__parse(self.BASE_BLUE, red, green, blue, 6):
+    elif self.__parse(self.BASE_BLUE, red, green, blue, 10):
       return COLOR_DICT["BLUE"]
     elif self.__parse(self.BASE_GRAY, red, green, blue, 6):
       return COLOR_DICT["GRAY"]
