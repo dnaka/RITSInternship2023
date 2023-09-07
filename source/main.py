@@ -114,11 +114,11 @@ class LineTraceCar():
 
       #  障害物との距離が10cm以下の場合
       if self.GetDistance() <= 100:
-        # 停止し、停止時間の目安のためにcountを１増加させる
+        # 停止し、停止時間の管理のためのcountを１増加させる
         #この周の処理を終了
         self.__run(0, 0)
         count += 1
-        #一定時間、ロボの前に障害物があった場合アラートを鳴らす。
+        #約5秒間、ロボの前に障害物があった場合アラートを鳴らす。
         if count >= 50:
           self.Alert()
         wait(100)
@@ -299,3 +299,4 @@ if __name__ == "__main__":
 
   # ライントレース開始
   car.TraceColorLine()
+
