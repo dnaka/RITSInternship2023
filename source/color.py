@@ -13,6 +13,7 @@ COLOR_DICT = {
   "BLUE":4,
   "YELLOW":5,
   "GRAY":6,
+  "GREEN":7,
 }
 
 # pybricksのreferenceはここ: https://docs.pybricks.com/en/v3.2.0/index.html
@@ -29,7 +30,7 @@ class RGBColor():
   BASE_YELLOW = [88, 100, 39]
   BASE_BLACK = [5, 5, 10]
   BASE_GRAY = [52, 80, 100]
-  BASE_GREEN = [20, 53, 38]
+  BASE_GREEN = [19, 59, 38]
   BASE_WHITE = [57, 58, 75]
 
   def __init__(self):
@@ -57,7 +58,7 @@ class RGBColor():
     センサーの取得したRGB値を具体的な色に変換する
     """
     (red, green, blue) = self.colorSensor.rgb()
-    if self.__parse(self.BASE_BLACK, red, green, blue, 20):
+    if self.__parse(self.BASE_BLACK, red, green, blue, 30):
       return COLOR_DICT["BLACK"]
     elif self.__parse(self.BASE_RED, red, green, blue, 8):
       return COLOR_DICT["RED"]
@@ -65,9 +66,11 @@ class RGBColor():
       return COLOR_DICT["YELLOW"]
     elif self.__parse(self.BASE_BLUE, red, green, blue, 6):
       return COLOR_DICT["BLUE"]
-    elif self.__parse(self.BASE_GRAY, red, green, blue, 4):
+    elif self.__parse(self.BASE_GRAY, red, green, blue, 6):
       return COLOR_DICT["GRAY"]
-    elif self.__parse(self.BASE_WHITE, red, green, blue, 10):
+    elif self.__parse(self.BASE_GREEN, red, green, blue, 6):
+      return COLOR_DICT["GREEN"]
+    elif self.__parse(self.BASE_WHITE, red, green, blue, 4):
       return COLOR_DICT["WHITE"]
     else:
       return COLOR_DICT["UNKNOWN"]
