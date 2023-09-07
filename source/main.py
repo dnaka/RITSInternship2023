@@ -11,9 +11,6 @@ from pybricks import ev3brick as brick
 from pybricks.robotics import DriveBase
 from color import RGBColor, COLOR_DICT
 
-from pybricks.tools import wait, StopWatch
-from pybricks import ev3brick as brick
-
 class LineTraceCar():
   """
   ライントレースを行うクラス
@@ -31,58 +28,62 @@ class LineTraceCar():
     self.rightMotor = Motor(Port.B)
     self.ultrasonicsensor = UltrasonicSensor(Port.S4)
     self.robot = DriveBase(self.leftMotor, self.rightMotor, 56, 104)
-    
-  
+    self.ts_1 = TouchSensor(Port.S1)
+    self.ts_2 = TouchSensor(Port.S2)
+
   def parking(self):
     """
     車庫入れと元の道への復帰をする
     """
+
+    # 車庫入れ
+    # 直進
     self.robot.drive_time(self.SPEED[0], 0, 180000/self.SPEED[0])
+    # 反時計回りに角速度(45deg/s)で転回
     self.robot.drive_time(0, -45, 2200)
+    # 後退
     self.robot.drive_time(-self.SPEED[0], 0, 250000/self.SPEED[0])
 
     # 待機状態にする
     self.idle()
 
+    # 元の道への復帰
+    # 直進
     self.robot.drive_time(self.SPEED[0], 0, 270000/self.SPEED[0])
+    # 時計回りに角速度(45deg/s)で転回
     self.robot.drive_time(0, 45, 2200)
     self.robot.drive_time(self.SPEED[0], 0, 100000/self.SPEED[0])
 
-  # def goal(self):
-  #   """
-  #   厨房に戻る
-  #   """
-  #   self.robot.drive_time(self.SPEED[0], 0, 310000/self.SPEED[0])
-  #   self.robot.drive_time(0, -45, 2200)
-
-  #   # 待機状態にする
-  #   self.idle()
-
-  def goal(self):
+  def returnKitchen(self):
     """
     厨房に戻ったとき緑なら
     """
-    self.robot.drive_time(-self.SPEED[0], 0, 90000/self.SPEED[0])
-    self.robot.drive_time(0, -45, 2000)
-
-    # 待機状態にする
-    self.idle()
+    
+    # 直進
+    self.robot.drive_time(-self.SPEED[0], 0, 100000/self.SPEED[0])
+    # 反時計回りに角速度(45deg/s)で転回
+    self.robot.drive_time(0, -45, 3000)
 
 
   def idle(self):
     """
     タッチセンサーが押されるまで待機状態になる
     """
+    # 停止する
     self.__run(0,0)
+
+    # 待機状態になる
     while True:
-      if ts_1.pressed() or ts_2.pressed():
+      # タッチセンサーが押されたら処理を終了
+      if self.ts_1.pressed() or self.ts_2.pressed():
         break
+    # end of while
 
   def GetDistance(self):
     # 距離を返す
     return self.ultrasonicsensor.distance()
     
-  def TraceColorLine(self, color):
+  def TraceColorLine(self):
     """
     色の線をトレースする
     """
@@ -90,7 +91,10 @@ class LineTraceCar():
     rgbColor = RGBColor()
 
     self.__initMotor()
+
     isDelivery = True
+
+    selected_color = self.selectColor()
 
     # ラインをトレースして走る
     while True:
@@ -103,127 +107,73 @@ class LineTraceCar():
 
       # 色の取得と判定
       gotColor = rgbColor.getColor()
-      # 画面を初期化
-      #brick.display.clear()
 
-      if gotColor is COLOR_DICT["BLACK"] and isDelivery:
-        # 色名を画面に表示
-        #brick.display.text("BLACK",(60,50))
-        # 右旋回
-        self.__run(self.SPEED[1], self.SPEED[0])
-
-      elif gotColor is COLOR_DICT["YELLOW"] and isDelivery:
-        # 色名を画面に表示
-        #brick.display.text("YELLOW",(60,50))
-        if color == "YELLOW" and isDelivery:
-          isDelivery = False
-          # 車庫入れ
-          self.parking()
-        else:
-          # 右旋回
-          self.__run(self.SPEED[1], self.SPEED[0])
-      
-      elif gotColor is COLOR_DICT["RED"] and isDelivery:
-        # 色名を画面に表示
-        #brick.display.text("RED",(60,50))
-        if color == "RED" and isDelivery:
-          isDelivery = False
-          # 車庫入れ
-          self.parking()
-        else:
+      # 配達中かどうかで分岐
+      if isDelivery:
+        if gotColor is COLOR_DICT["BLACK"]:
           # 右旋回
           self.__run(self.SPEED[1], self.SPEED[0])
 
-      elif gotColor is COLOR_DICT["BLUE"] and isDelivery:
-        # 色名を画面に表示
-        brick.display.text("BLUE",(60,50))
-        if color == "BLUE" and isDelivery:
-          isDelivery = False
-          # 車庫入れ
-          self.parking()
-        else:
+        elif gotColor is COLOR_DICT["YELLOW"]:
+          # 選んだ色が黄色の場合
+          if selected_color == "YELLOW":
+            # 配達中フラグをFalseにする
+            isDelivery = False
+            # 車庫入れ
+            self.parking()
+
+          else:
+            # 右旋回
+            self.__run(self.SPEED[1], self.SPEED[0])
+        
+        elif gotColor is COLOR_DICT["RED"]:
+          # 選んだ色が赤色の場合
+          if selected_color == "RED":
+            # 配達中フラグをFalseにする
+            isDelivery = False
+            # 車庫入れ
+            self.parking()
+
+          else:
+            # 右旋回
+            self.__run(self.SPEED[1], self.SPEED[0])
+
+        elif gotColor is COLOR_DICT["BLUE"]:
+          # 選んだ色が青色の場合
+          if selected_color == "BLUE":
+            # 配達中フラグをFalseにする
+            isDelivery = False
+            # 車庫入れ
+            self.parking()
+
+          else:
+            # 右旋回
+            self.__run(self.SPEED[1], self.SPEED[0])
+
+        elif gotColor is COLOR_DICT["GRAY"]:
           # 右旋回
           self.__run(self.SPEED[1], self.SPEED[0])
 
-      elif gotColor is COLOR_DICT["GREEN"] and not isDelivery:
-        # 色名を画面に表示
-        # brick.display.text("GRAY",(60,50))
-        if isDelivery:
-          # 右旋回
-          self.__run(self.SPEED[1], self.SPEED[0])
         else:
+          # その他の色で左回転
+          self.__run(self.SPEED[0], self.SPEED[1])
+      # 厨房に戻るとき
+      else:
+        if gotColor is COLOR_DICT["GREEN"]:
           isDelivery = True
           # 厨房に戻る
-          self.goal()
+          self.returnKitchen()
+          selected_color = self.selectColor()
+      
+        elif gotColor is COLOR_DICT["WHITE"]:
+          # 左回転
+          self.__run(self.SPEED[0], self.SPEED[1])
 
-      elif gotColor is COLOR_DICT["WHITE"]:
-        # 色名を画面に表示
-        #brick.display.text("WHITE",(60,50))
-        # 左回転
-        self.__run(self.SPEED[0], self.SPEED[1])
+        else:
+          # その他の色で右回転
+          self.__run(self.SPEED[1], self.SPEED[0])
 
-      elif gotColor is COLOR_DICT["GRAY"] and isDelivery:
-        # 色名を画面に表示
-        #brick.display.text("GRAY",(60,50))
-        # if isDelivery:
-        #   # 右旋回
-        #   self.__run(self.SPEED[1], self.SPEED[0])
-        # else:
-        #   isDelivery = True
-        #   # 厨房に戻る
-        #   self.goal()
-
-        self.__run(self.SPEED[1], self.SPEED[0])
-
-      elif gotColor is COLOR_DICT["UNKNOWN"] and isDelivery:
-        # 白以外のその他の色も左回転
-        self.__run(self.SPEED[0], self.SPEED[1])
-
-      elif gotColor is COLOR_DICT["UNKNOWN"] and not isDelivery:
-        # 白以外のその他の色も左回転
-        self.__run(self.SPEED[1], self.SPEED[0])
     # end of while
-
-    # brick.display.clear()
-    # while not isDelivery:
-    #   #  障害物との距離が5cm以下の場合
-    #   if self.GetDistance() <= 50:
-    #     # 停止し、この周の処理を終了
-    #     self.__run(0, 0)
-    #     continue
-
-    #   # 色の取得と判定
-    #   gotColor = rgbColor.getColor()
-    #   # 画面を初期化
-
-    #   # if gotColor is COLOR_DICT["BLACK"]:
-    #   #   # 右旋回
-    #   #   self.__run(self.SPEED[1], self.SPEED[0])
-
-    #   # elif gotColor is COLOR_DICT["WHITE"]:
-    #   #   # 左回転
-    #   #   self.__run(self.SPEED[0], self.SPEED[1])
-
-    #   # elif gotColor is COLOR_DICT["GRAY"]:
-    #   #   if isDelivery:
-    #   #     # 右旋回
-    #   #     self.__run(self.SPEED[1], self.SPEED[0])
-    #   #   else:
-    #   #     isDelivery = True
-    #   #     # 厨房に戻る
-    #   #     self.goal()
-
-    #   if gotColor is COLOR_DICT["WHITE"]:
-    #     # 右旋回
-    #     self.__run(self.SPEED[0], self.SPEED[1])
-
-    #   elif gotColor is COLOR_DICT["GRAY"]:
-    #     # 右旋回
-    #     self.__run(self.SPEED[1], self.SPEED[0])
-
-    #   else:
-    #     # 白以外のその他の色も左回転
-    #     self.__run(self.SPEED[0], self.SPEED[1])
 
     # モーターを停止
     self.leftMotor.stop()
@@ -279,55 +229,53 @@ class LineTraceCar():
     # 走行距離yは y = 5.6(cm タイヤ直径) * 3.14 * deg / 360 で計算できるので、これを変形してdegを計算する
     return run_distance_cm * 20.47
 
-class initColor():
-    def __init__(self, ts_1, ts_2):
-      self.init_color = "RED"
-      self.ts_1 = ts_1
-      self.ts_2 = ts_2
+  def selectColor(self):
+    """
+    ボタンで色を選択し、選択された色を返す
+    """
+    # 選べる色のリスト
+    color_list = ["BLUE", "RED", "YELLOW"]
+    # 現在選んでいる色のリスト番号
+    color_index = 0
 
-    def selectColor(self):
-      stop_color = ["BLUE", "RED", "YELLOW"]
-      color_index = 0
+    brick.display.clear()
+    brick.display.text("please select color",(20, 50))
 
-      brick.display.clear()
-      brick.display.text("please select color",(20, 50))
+    wait(3000)
 
-      wait(3000)
+    pre_ts_1, pre_ts_2 = False, False
 
-      pre_ts_1, pre_ts_2 = False, False
+    brick.display.clear()
+    brick.display.text(color_list[color_index],(60, 50))
 
-      brick.display.clear()
-      brick.display.text(stop_color[color_index],(60, 50))
+    # 色の選択
+    while True:
+      # waitを入れることで、ボタンが確実に反応するようになる
+      wait(100)
 
-      while True:
-        # waitを入れることで、ボタンが確実に反応するようになる
-        wait(100)
-        if (not self.ts_1.pressed()) and pre_ts_1:
-          color_index = (color_index + 1) % 3
-          brick.display.clear()
-          brick.display.text(stop_color[color_index],(60, 50))
+      # ts_1を押すと色を変更
+      if (not self.ts_1.pressed()) and pre_ts_1:
+        color_index = (color_index + 1) % 3
+        brick.display.clear()
+        brick.display.text(color_list[color_index],(60, 50))
 
-        if (not self.ts_2.pressed()) and pre_ts_2:
-          brick.display.clear()
-          break
+      # ts_2を押すとループを終了
+      if (not self.ts_2.pressed()) and pre_ts_2:
+        brick.display.clear()
+        break
 
-        pre_ts_1 = ts_1.pressed()
-        pre_ts_2 = ts_2.pressed()
+      # 100ミリ秒前にボタンが押されたか
+      pre_ts_1 = self.ts_1.pressed()
+      pre_ts_2 = self.ts_2.pressed()
+    # end of while
+      
 
-      self.init_color = stop_color[color_index]
-
-      return self.init_color
+    return color_list[color_index]
 
 
 if __name__ == "__main__":
-  ts_1, ts_2 = TouchSensor(Port.S1), TouchSensor(Port.S2)
-
-  instanceInitColor = initColor(ts_1, ts_2)
-  init_color = instanceInitColor.selectColor()
-
-  print(init_color)
 
   car = LineTraceCar()
-  # ライントレース開始
 
-  car.TraceColorLine(init_color)
+  # ライントレース開始
+  car.TraceColorLine()

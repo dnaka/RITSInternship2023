@@ -31,7 +31,7 @@ class RGBColor():
   BASE_BLACK = [5, 5, 10]
   BASE_GRAY = [52, 80, 100]
   BASE_GREEN = [19, 59, 38]
-  BASE_WHITE = [57, 58, 75]
+  BASE_WHITE = [80, 80, 80]
 
   def __init__(self):
     """Constructor"""
