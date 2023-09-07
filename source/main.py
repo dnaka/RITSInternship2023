@@ -71,6 +71,7 @@ class LineTraceCar():
     """
     # 停止する
     self.__run(0,0)
+    # テキストの表示
     self.ev3.screen.clear()
     self.ev3.screen.draw_text(0, 20, "Please take a dish")
     self.ev3.screen.draw_text(5, 60, "and press button")
@@ -78,6 +79,7 @@ class LineTraceCar():
     while True:
       # タッチセンサーが押されたら処理を終了
       if self.ts_1.pressed() or self.ts_2.pressed():
+        # 画面をクリア
         self.ev3.screen.clear()
         break
     # end of while
@@ -243,6 +245,7 @@ class LineTraceCar():
 
     pre_ts_1, pre_ts_2 = False, False
 
+    # テキストの表示
     self.ev3.screen.clear()
     self.ev3.screen.draw_text(0, 20, "Please select color")
     self.ev3.screen.draw_text(0, 60, color_list[color_index])
@@ -255,12 +258,14 @@ class LineTraceCar():
       # ts_1を押すと色を変更
       if (not self.ts_1.pressed()) and pre_ts_1:
         color_index = (color_index + 1) % 3
+        # テキストの変更
         self.ev3.screen.clear()
         self.ev3.screen.draw_text(0, 20, "Please select color")
         self.ev3.screen.draw_text(0, 60, color_list[color_index])
 
       # ts_2を押すとループを終了
       if (not self.ts_2.pressed()) and pre_ts_2:
+        # 画面をクリア
         self.ev3.screen.clear()
         break
 
