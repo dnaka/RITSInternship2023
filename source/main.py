@@ -7,7 +7,6 @@ from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor, TouchSensor, UltrasonicSensor
 from pybricks.parameters import Port
 from pybricks.tools import wait, StopWatch
-from pybricks import ev3brick as brick
 from pybricks.robotics import DriveBase
 from color import RGBColor, COLOR_DICT
 
@@ -26,10 +25,11 @@ class LineTraceCar():
     # EV3の固有デバイス初期化
     self.leftMotor = Motor(Port.C)
     self.rightMotor = Motor(Port.B)
-    self.ultrasonicsensor = UltrasonicSensor(Port.S4)
     self.robot = DriveBase(self.leftMotor, self.rightMotor, 56, 104)
+    self.ultrasonicsensor = UltrasonicSensor(Port.S4)
     self.ts_1 = TouchSensor(Port.S1)
     self.ts_2 = TouchSensor(Port.S2)
+    self.ev3 = EV3Brick()
 
   def parking(self):
     """
@@ -61,7 +61,7 @@ class LineTraceCar():
     # 直進
     self.robot.drive_time(self.SPEED[0], 0, 300000/self.SPEED[0])
     # 反時計回りに角速度(45deg/s)で転回
-    self.robot.drive_time(0, -45, 2000)
+    self.robot.drive_time(0, -45, 2000)take the dish
 
 
   def idle(self):
@@ -70,11 +70,13 @@ class LineTraceCar():
     """
     # 停止する
     self.__run(0,0)
-
+        ev3.screen.clear()
+        ev3.screen.draw_text(20, 0, "Please take the dish and press button")
     # 待機状態になる
     while True:
       # タッチセンサーが押されたら処理を終了
       if self.ts_1.pressed() or self.ts_2.pressed():
+        ev3.screen.clear()
         break
     # end of while
 
@@ -110,13 +112,10 @@ class LineTraceCar():
       brick.display.clear()
 
       if gotColor is COLOR_DICT["BLACK"]:
-        brick.display.text("BLACK",(60,50))
-
         # 右旋回
         self.__run(self.SPEED[1], self.SPEED[0])
 
       elif gotColor is COLOR_DICT["YELLOW"]:
-        brick.display.text("YELLOW",(60,50))
         # 選んだ色が黄色かつ配達中フラグがTrueの場合
         if selected_color == "YELLOW" and isDelivery:
           # 配達中フラグをFalseにする
@@ -129,7 +128,6 @@ class LineTraceCar():
           self.__run(self.SPEED[1], self.SPEED[0])
       
       elif gotColor is COLOR_DICT["RED"]:
-        brick.display.text("RED",(60,50))
         # 選んだ色が赤色かつ配達中フラグがTrueの場合
         if selected_color == "RED" and isDelivery:
           # 配達中フラグをFalseにする
@@ -142,7 +140,6 @@ class LineTraceCar():
           self.__run(self.SPEED[1], self.SPEED[0])
 
       elif gotColor is COLOR_DICT["BLUE"]:
-        brick.display.text("BLUE",(60,50))
         # 選んだ色が青色かつ配達中フラグがTrueの場合
         if selected_color == "BLUE" and isDelivery:
           # 配達中フラグをFalseにする
@@ -155,11 +152,11 @@ class LineTraceCar():
           self.__run(self.SPEED[1], self.SPEED[0])
 
       elif gotColor is COLOR_DICT["GRAY"]:
-        brick.display.text("GRAY",(60,50))
         # 配達中フラグがTrueの場合
         if isDelivery:
           # 右旋回
           self.__run(self.SPEED[1], self.SPEED[0])
+
         # 配達中フラグがFalseの場合
         else:
           # 配達中フラグをTrueにする
@@ -169,8 +166,6 @@ class LineTraceCar():
           selected_color = self.selectColor()
 
       elif gotColor is COLOR_DICT["WHITE"]:
-        # 色名を画面に表示
-        brick.display.text("WHITE",(60,50))
         # 左回転
         self.__run(self.SPEED[0], self.SPEED[1])
 
@@ -242,15 +237,11 @@ class LineTraceCar():
     # 現在選んでいる色のリスト番号
     color_index = 0
 
-    brick.display.clear()
-    brick.display.text("please select color",(20, 50))
-
-    wait(3000)
-
     pre_ts_1, pre_ts_2 = False, False
 
-    brick.display.clear()
-    brick.display.text(color_list[color_index],(60, 50))
+    self.ev3.screen.clear()
+    self.ev3.screen.draw_text(20, 50, "Please select color")
+    self.ev3.screen.draw_text(60, 50, color_list[color_index])
 
     # 色の選択
     while True:
@@ -260,8 +251,9 @@ class LineTraceCar():
       # ts_1を押すと色を変更
       if (not self.ts_1.pressed()) and pre_ts_1:
         color_index = (color_index + 1) % 3
-        brick.display.clear()
-        brick.display.text(color_list[color_index],(60, 50))
+        ev3.screen.clear()
+        ev3.screen.draw_text(20, 50, "Please select color")
+        ev3.screen.draw_text(60, 50, color_list[color_index])
 
       # ts_2を押すとループを終了
       if (not self.ts_2.pressed()) and pre_ts_2:
