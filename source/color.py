@@ -108,6 +108,8 @@ if __name__ == "__main__":
       ev3.screen.draw_text(0, 0, "YELLOW")
     elif color is COLOR_DICT["BLACK"]:
       ev3.screen.draw_text(0, 0, "BLACK")
+    elif color is COLOR_DICT["GREEN"]:
+      ev3.screen.draw_text(0, 0, "GREEN")
     elif color is COLOR_DICT["WHITE"]:
       ev3.screen.draw_text(0, 0, "WHITE")
     elif color is COLOR_DICT["GRAY"]:

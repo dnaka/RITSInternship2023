@@ -59,7 +59,7 @@ class LineTraceCar():
     厨房に戻ったとき緑なら
     """
     
-    # 直進
+    # 後退
     self.robot.drive_time(-self.SPEED[0], 0, 100000/self.SPEED[0])
     # 反時計回りに角速度(45deg/s)で転回
     self.robot.drive_time(0, -45, 3000)
