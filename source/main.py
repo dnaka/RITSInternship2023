@@ -11,9 +11,6 @@ from pybricks import ev3brick as brick
 from pybricks.robotics import DriveBase
 from color import RGBColor, COLOR_DICT
 
-from pybricks.tools import wait, StopWatch
-from pybricks import ev3brick as brick
-
 class LineTraceCar():
   """
   ライントレースを行うクラス
@@ -258,7 +255,7 @@ class LineTraceCar():
         brick.display.clear()
         brick.display.text(color_list[color_index],(60, 50))
 
-      # ts_を押すとループを終了
+      # ts_2を押すとループを終了
       if (not self.ts_2.pressed()) and pre_ts_2:
         brick.display.clear()
         break
