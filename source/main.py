@@ -106,55 +106,63 @@ class LineTraceCar():
 
       # 色の取得と判定
       gotColor = rgbColor.getColor()
-      # 画面を初期化
+
       brick.display.clear()
 
       if gotColor is COLOR_DICT["BLACK"]:
-        # 色名を画面に表示
         brick.display.text("BLACK",(60,50))
+
         # 右旋回
         self.__run(self.SPEED[1], self.SPEED[0])
 
       elif gotColor is COLOR_DICT["YELLOW"]:
-        # 色名を画面に表示
         brick.display.text("YELLOW",(60,50))
+        # 選んだ色が黄色かつ配達中フラグがTrueの場合
         if selected_color == "YELLOW" and isDelivery:
+          # 配達中フラグをFalseにする
           isDelivery = False
           # 車庫入れ
           self.parking()
+
         else:
           # 右旋回
           self.__run(self.SPEED[1], self.SPEED[0])
       
       elif gotColor is COLOR_DICT["RED"]:
-        # 色名を画面に表示
         brick.display.text("RED",(60,50))
+        # 選んだ色が赤色かつ配達中フラグがTrueの場合
         if selected_color == "RED" and isDelivery:
+          # 配達中フラグをFalseにする
           isDelivery = False
           # 車庫入れ
           self.parking()
+
         else:
           # 右旋回
           self.__run(self.SPEED[1], self.SPEED[0])
 
       elif gotColor is COLOR_DICT["BLUE"]:
-        # 色名を画面に表示
         brick.display.text("BLUE",(60,50))
+        # 選んだ色が青色かつ配達中フラグがTrueの場合
         if selected_color == "BLUE" and isDelivery:
+          # 配達中フラグをFalseにする
           isDelivery = False
           # 車庫入れ
           self.parking()
+
         else:
           # 右旋回
           self.__run(self.SPEED[1], self.SPEED[0])
 
       elif gotColor is COLOR_DICT["GRAY"]:
-        # 色名を画面に表示
         brick.display.text("GRAY",(60,50))
+        # 配達中フラグがTrueの場合
         if isDelivery:
           # 右旋回
           self.__run(self.SPEED[1], self.SPEED[0])
+        # 配達中フラグがFalseの場合
         else:
+          # 配達中フラグをTrueにする
           isDelivery = True
           # 厨房に戻る
           self.returnKitchen()
