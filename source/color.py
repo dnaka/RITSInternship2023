@@ -22,7 +22,6 @@ class RGBColor():
   RGBカラーを取り扱うクラス。定数とメソッドのみで状態は持たない。
   Colorクラスだとpybricksのクラス名とかぶるのでRGBColorにしている。
   """
-  THRESHOLD = 8
 
   # 各色の基準値。RGBの反射値がこれらの+-THRESHOLD以内なら、その色として扱う。単位は%
   BASE_RED = [88, 18, 42]
