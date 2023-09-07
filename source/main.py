@@ -119,9 +119,10 @@ class LineTraceCar():
         self.__run(0, 0)
         count += 1
         #一定時間、ロボの前に障害物があった場合アラートを鳴らす。
-        if count >= 1300:
+        if count >= 50:
           self.Alert()
-        continue
+        wait(100)
+        continue   
       count = 0
       
       # 色の取得と判定
