@@ -4,12 +4,12 @@ sys.path.append("./")
 
 # pybricksのreferenceはここ: https://docs.pybricks.com/en/v3.2.0/index.html
 from pybricks.hubs import EV3Brick
+from pybricks import ev3brick as brick
 from pybricks.ev3devices import Motor, TouchSensor, UltrasonicSensor
 from pybricks.parameters import Port
 from pybricks.tools import wait, StopWatch
 from pybricks.robotics import DriveBase
 from color import RGBColor, COLOR_DICT
-from time import time
 
 class LineTraceCar():
   """
@@ -24,12 +24,12 @@ class LineTraceCar():
     Constructor
     """
     # EV3の固有デバイス初期化
-    self.leftMotor = Motor(Port.C)
-    self.rightMotor = Motor(Port.B)
+    self.leftMotor = Motor(Port.B)
+    self.rightMotor = Motor(Port.C)
     self.robot = DriveBase(self.leftMotor, self.rightMotor, 56, 104)
-    self.ultrasonicsensor = UltrasonicSensor(Port.S4)
-    self.ts_1 = TouchSensor(Port.S1)
-    self.ts_2 = TouchSensor(Port.S2)
+    self.ultrasonicsensor = UltrasonicSensor(Port.S2)
+    self.ts_1 = TouchSensor(Port.S4)
+    self.ts_2 = TouchSensor(Port.S1)
     self.ev3 = EV3Brick()
 
   def parking(self):
