@@ -10,6 +10,7 @@ from pybricks.parameters import Port
 from pybricks.tools import wait, StopWatch
 from pybricks.robotics import DriveBase
 from color import RGBColor, COLOR_DICT
+import time
 
 class LineTraceCar():
   """
@@ -17,7 +18,9 @@ class LineTraceCar():
   """
 
   # タイヤの速度。ターンする時は片方をLOW、もう片方をHIGHにすると曲がる。単位は角度/s (deg/s)
-  SPEED = [240, 80]
+  PRE_SPEED = [[600, 550], [360, 95]]
+  SPEED = [500, 120]
+  SERVING_SPEED = 300
 
   def __init__(self):
     """
@@ -39,21 +42,21 @@ class LineTraceCar():
 
     # 車庫入れ
     # 直進
-    self.robot.drive_time(self.SPEED[0], 0, 180000/self.SPEED[0])
+    self.robot.drive_time(self.SERVING_SPEED, 0, 180000/self.SERVING_SPEED)
     # 反時計回りに角速度(45deg/s)で転回
     self.robot.drive_time(0, -45, 2200)
     # 後退
-    self.robot.drive_time(-self.SPEED[0], 0, 250000/self.SPEED[0])
+    self.robot.drive_time(-self.SERVING_SPEED, 0, 250000/self.SERVING_SPEED)
 
     # 待機状態にする
     self.idle()
 
     # 元の道への復帰
     # 直進
-    self.robot.drive_time(self.SPEED[0], 0, 270000/self.SPEED[0])
+    self.robot.drive_time(self.SERVING_SPEED, 0, 290000/self.SERVING_SPEED)
     # 時計回りに角速度(45deg/s)で転回
     self.robot.drive_time(0, 45, 2200)
-    self.robot.drive_time(self.SPEED[0], 0, 100000/self.SPEED[0])
+    # self.robot.drive_time(self.SERVING_SPEED, 0, 100000/self.SERVING_SPEED)
 
   def returnKitchen(self):
     """
@@ -61,7 +64,7 @@ class LineTraceCar():
     """
     
     # 後退
-    self.robot.drive_time(-self.SPEED[0], 0, 100000/self.SPEED[0])
+    self.robot.drive_time(-self.SERVING_SPEED, 0, 100000/self.SERVING_SPEED)
     # 反時計回りに角速度(45deg/s)で転回
     self.robot.drive_time(0, -45, 3000)
 
@@ -114,6 +117,9 @@ class LineTraceCar():
 
     selected_color = self.selectColor()
 
+    speed_index = 0
+    start_time = time.time()
+
     # ラインをトレースして走る
     while True:
 
@@ -133,11 +139,14 @@ class LineTraceCar():
       # 色の取得と判定
       gotColor = rgbColor.getColor()
 
+      if time.time() - start_time >= 8:
+        speed_index = 1
+
       # 配達中かどうかで分岐
       if isDelivery:
         if gotColor is COLOR_DICT["BLACK"]:
           # 右旋回
-          self.__run(self.SPEED[1], self.SPEED[0])
+          self.__run(self.PRE_SPEED[speed_index][1], self.PRE_SPEED[speed_index][0])
 
         elif gotColor is COLOR_DICT["YELLOW"]:
           # 選んだ色が黄色の場合
@@ -149,7 +158,7 @@ class LineTraceCar():
 
           else:
             # 右旋回
-            self.__run(self.SPEED[1], self.SPEED[0])
+            self.__run(self.PRE_SPEED[speed_index][1], self.PRE_SPEED[speed_index][0])
         
         elif gotColor is COLOR_DICT["RED"]:
           # 選んだ色が赤色の場合
@@ -161,7 +170,7 @@ class LineTraceCar():
 
           else:
             # 右旋回
-            self.__run(self.SPEED[1], self.SPEED[0])
+            self.__run(self.PRE_SPEED[speed_index][1], self.PRE_SPEED[speed_index][0])
 
         elif gotColor is COLOR_DICT["BLUE"]:
           # 選んだ色が青色の場合
@@ -173,15 +182,15 @@ class LineTraceCar():
 
           else:
             # 右旋回
-            self.__run(self.SPEED[1], self.SPEED[0])
+            self.__run(self.PRE_SPEED[speed_index][1], self.PRE_SPEED[speed_index][0])
 
         elif gotColor is COLOR_DICT["GRAY"]:
           # 右旋回
-          self.__run(self.SPEED[1], self.SPEED[0])
+          self.__run(self.PRE_SPEED[speed_index][1], self.PRE_SPEED[speed_index][0])
 
         else:
           # その他の色で左回転
-          self.__run(self.SPEED[0], self.SPEED[1])
+          self.__run(self.PRE_SPEED[speed_index][0], self.PRE_SPEED[speed_index][1])
       # 厨房に戻るとき
       else:
         if gotColor is COLOR_DICT["GREEN"]:
