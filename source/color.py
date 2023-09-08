@@ -24,11 +24,11 @@ class RGBColor():
   """
 
   # 各色の基準値。RGBの反射値がこれらの+-THRESHOLD以内なら、その色として扱う。単位は%
-  BASE_RED = [88, 18, 42]
+  BASE_RED = [89, 18, 42]
   BASE_BLUE = [13, 27, 100]
-  BASE_YELLOW = [88, 100, 39]
+  BASE_YELLOW = [92, 100, 41]
   BASE_BLACK = [5, 5, 10]
-  BASE_GRAY = [52, 80, 100]
+  BASE_GRAY = [54, 77, 100]
   BASE_GREEN = [19, 59, 38]
   BASE_WHITE = [80, 80, 80]
 
@@ -61,12 +61,12 @@ class RGBColor():
       return COLOR_DICT["BLACK"]
     elif self.__parse(self.BASE_RED, red, green, blue, 8):
       return COLOR_DICT["RED"]
-    elif self.__parse(self.BASE_YELLOW, red, green, blue, 8):
+    elif self.__parse(self.BASE_YELLOW, red, green, blue, 15):
       return COLOR_DICT["YELLOW"]
-    elif self.__parse(self.BASE_BLUE, red, green, blue, 6):
-      return COLOR_DICT["BLUE"]
     elif self.__parse(self.BASE_GRAY, red, green, blue, 6):
       return COLOR_DICT["GRAY"]
+    elif self.__parse(self.BASE_BLUE, red, green, blue, 2):
+      return COLOR_DICT["BLUE"]
     elif self.__parse(self.BASE_GREEN, red, green, blue, 6):
       return COLOR_DICT["GREEN"]
     elif self.__parse(self.BASE_WHITE, red, green, blue, 4):
